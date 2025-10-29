@@ -19,7 +19,7 @@ interface VenueItem {
     data: VenueItem[]
   }
 
-  interface BookingItem {
+export interface BookingItem {
     nameLastname: string;
     tel: string;
     venue: string;
