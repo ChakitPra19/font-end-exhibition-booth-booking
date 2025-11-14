@@ -41,15 +41,28 @@ export interface ApiResponse<T> {
   success: boolean;
   count?: number;
   pagination?: object;
-  data: T;
+  data?: T;
   token?: string;
   message?: string;
+  // Additional fields that might come directly in response
+  _id?: string;
+  name?: string;
+  email?: string;
+  tel?: string;
+  role?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface AuthResponse {
   success: boolean;
   token: string;
-  data: User;
+  _id: string;
+  name: string;
+  email: string;
+  tel?: string;
+  role?: string;
+  createdAt?: string;
 }
 
 // Legacy interfaces (keeping for compatibility)
