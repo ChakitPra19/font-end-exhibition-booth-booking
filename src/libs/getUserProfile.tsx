@@ -1,6 +1,8 @@
+// Legacy function - use getCurrentUser from authAPI.tsx for new implementations
 export default async function getUserProfile(token:string){
+    const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000/api/v1';
 
-    const response = await fetch("https://a08-venue-explorer-backend-3.vercel.app/api/v1/auth/me",{
+    const response = await fetch(`${API_BASE_URL}/auth/me`,{
         method: "GET",
         headers:{
             authorization: `Bearer ${token}`,
