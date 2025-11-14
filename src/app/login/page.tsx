@@ -14,7 +14,7 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const { login } = useAuth();
+  const { login, refreshUser } = useAuth();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -43,7 +43,9 @@ export default function LoginPage() {
         
         login(response.token, userData);
         
-        setTimeout(() => {
+        // Refresh user data to get role from backend
+        setTimeout(async () => {
+          await refreshUser();
           router.push('/');
         }, 100);
       } else {

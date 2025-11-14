@@ -8,7 +8,7 @@ interface User {
   name: string;
   email: string;
   tel: string;
-  role: string;
+  role?: string;
   createdAt: string;
 }
 
@@ -63,6 +63,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const refreshUser = async () => {
     const storedToken = localStorage.getItem('token');
+    
     if (!storedToken) {
       setLoading(false);
       return;
@@ -71,12 +72,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     try {
       const response = await getCurrentUser(storedToken);
       if (response.success) {
-        setUser(response.data);
+        const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+        const userData = {
+          ...response.data,
+          role: response.data.role || currentUser.role || 'user'
+        };
+        setUser(userData);
         setToken(storedToken);
+        localStorage.setItem('user', JSON.stringify(userData));
       } else {
+        console.log('Response not successful, logging out');
         logout();
       }
     } catch (error) {
+      console.error('Error getting current user:', error);
       logout();
     } finally {
       setLoading(false);
@@ -90,9 +99,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
       if (storedToken && storedUser) {
         try {
+          const parsedUser = JSON.parse(storedUser);
           setToken(storedToken);
-          setUser(JSON.parse(storedUser));
+          setUser(parsedUser);
+          if (!parsedUser.role) {
+            console.log('No role found in stored user, refreshing from backend');
+            refreshUser();
+            return;
+          }
         } catch (error) {
+          console.log('Error parsing stored user:', error);
           logout();
         }
       }

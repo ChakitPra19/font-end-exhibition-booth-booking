@@ -4,7 +4,6 @@ import "./globals.css";
 import TopMenu from "@/components/TopMenu"
 import { getServerSession } from 'next-auth'
 import { authOptions } from "./api/auth/[...nextauth]/authOptions";
-import NextAuthProvider from "../providers/NextAuthProvider";
 import ReduxProvider from "@/redux/ReduxProvider";
 import { AuthProvider } from "@/providers/AuthProvider";
 
@@ -35,10 +34,8 @@ export default async function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <ReduxProvider>
           <AuthProvider>
-            {/* <NextAuthProvider session={session}> */}
             <TopMenu/>
             {children}
-            {/* </NextAuthProvider> */}
           </AuthProvider>
         </ReduxProvider>
       </body>
