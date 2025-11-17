@@ -12,8 +12,8 @@ import {
   Grid,
   Divider,
 } from "@mui/material";
-import { useAuth } from "@/providers/AuthProvider";
-import { Booking, User, Exhibition } from "../../../interface";
+import { useAuth } from "@/contexts/AuthContext";
+import { Booking } from "../../../interface";
 
 export default function MyBooking() {
   const { user, token } = useAuth();
@@ -31,12 +31,12 @@ export default function MyBooking() {
       try {
         const res = await fetch("http://localhost:5001/api/v1/booking", {
           headers: {
-            Authorization: `Bearer ${token}`, // ใช้ token จาก useAuth
+            Authorization: `Bearer ${token}`,
           },
         });
         if (!res.ok) throw new Error("Failed to fetch bookings");
         const data = await res.json();
-        setBookings(data.data);
+        setBookings(data.data || []);
       } catch (err) {
         console.error(err);
         alert("Cannot load bookings");
@@ -86,7 +86,9 @@ export default function MyBooking() {
   if (!bookings.length) {
     return (
       <Box display="flex" justifyContent="center" mt={10}>
-        <Typography variant="h5" sx={{ color: "#000" }}>No bookings found</Typography>
+        <Typography variant="h5" sx={{ color: "#000" }}>
+          No bookings found
+        </Typography>
       </Box>
     );
   }
@@ -98,48 +100,61 @@ export default function MyBooking() {
       </Typography>
 
       <Grid container spacing={2}>
-        {bookings.map((booking) => (
-          <Grid item xs={12} md={6} key={booking._id}>
-            <Card sx={{ boxShadow: 3 }}>
-              <CardContent>
-                <Typography variant="h6" fontWeight="bold">
-                  {booking.exhibition.name}
-                </Typography>
-                <Typography>
-                  Booth Type: {booking.boothType.charAt(0).toUpperCase() + booking.boothType.slice(1)}
-                </Typography>
-                <Typography>Amount: {booking.amount}</Typography>
-                <Typography>
-                  Exhibition Date: {new Date(booking.exhibition.startDate).toLocaleDateString()}
-                </Typography>
-                {user?.role === "admin" && (
-                  <Typography>Booked By: {booking.user.name} ({booking.user.email})</Typography>
-                )}
+        {bookings.map((booking) => {
+          const exhibitionName = booking.exhibition?.name ?? "Unknown Exhibition";
+          const exhibitionStartDate = booking.exhibition?.startDate
+            ? new Date(booking.exhibition.startDate).toLocaleDateString()
+            : "No date";
 
-                <Divider sx={{ my: 1 }} />
+          const boothType = booking.boothType
+            ? booking.boothType.charAt(0).toUpperCase() + booking.boothType.slice(1)
+            : "N/A";
 
-                <Box display="flex" gap={1}>
-                  <Button
-                    variant="contained"
-                    size="small"
-                    onClick={() => handleEdit(booking._id)}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    size="small"
-                    color="error"
-                    onClick={() => handleDelete(booking._id)}
-                    disabled={deletingId === booking._id}
-                  >
-                    {deletingId === booking._id ? "Deleting..." : "Delete"}
-                  </Button>
-                </Box>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
+          const bookedByName = booking.user?.name ?? "N/A";
+          const bookedByEmail = booking.user?.email ?? "N/A";
+
+          return (
+            <Grid item xs={12} md={6} key={booking._id}>
+              <Card sx={{ boxShadow: 3 }}>
+                <CardContent>
+                  <Typography variant="h6" fontWeight="bold">
+                    {exhibitionName}
+                  </Typography>
+                  <Typography>Booth Type: {boothType}</Typography>
+                  <Typography>Amount: {booking.amount}</Typography>
+                  <Typography>Exhibition Date: {exhibitionStartDate}</Typography>
+
+                  {user?.role === "admin" && (
+                    <Typography>
+                      Booked By: {bookedByName} ({bookedByEmail})
+                    </Typography>
+                  )}
+
+                  <Divider sx={{ my: 1 }} />
+
+                  <Box display="flex" gap={1}>
+                    <Button
+                      variant="contained"
+                      size="small"
+                      onClick={() => handleEdit(booking._id)}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      color="error"
+                      onClick={() => handleDelete(booking._id)}
+                      disabled={deletingId === booking._id}
+                    >
+                      {deletingId === booking._id ? "Deleting..." : "Delete"}
+                    </Button>
+                  </Box>
+                </CardContent>
+              </Card>
+            </Grid>
+          );
+        })}
       </Grid>
     </Box>
   );

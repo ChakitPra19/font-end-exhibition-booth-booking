@@ -2,16 +2,29 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Box, Card, CardContent, Typography, TextField, Select, MenuItem, Button, FormControl, InputLabel, Divider, CircularProgress } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardContent,
+  Typography,
+  TextField,
+  Select,
+  MenuItem,
+  Button,
+  FormControl,
+  InputLabel,
+  Divider,
+  CircularProgress,
+} from "@mui/material";
 import { useAuth } from "@/contexts/AuthContext";
 import { Exhibition } from "../../../interface";
 
-export default function CreateBooking() {
+export default function EditBooking() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const exhibitionId = searchParams.get("exhibitionId") || "";
+  const bookingId = searchParams.get("bookingId") || "";
 
-  const { user, token } = useAuth(); // ใช้ token จาก context
+  const { user, token } = useAuth();
 
   const [exhibition, setExhibition] = useState<Exhibition | null>(null);
   const [boothType, setBoothType] = useState("");
@@ -19,26 +32,37 @@ export default function CreateBooking() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
-  // Load exhibition info
+  // Load booking info
   useEffect(() => {
-    if (!exhibitionId) return;
+    if (!bookingId || !token) {
+      setLoading(false);
+      return;
+    }
 
-    const fetchExhibition = async () => {
+    const fetchBooking = async () => {
+      setLoading(true);
       try {
-        const res = await fetch(`http://localhost:5001/api/v1/exhibitions/${exhibitionId}`);
-        if (!res.ok) throw new Error("Failed to fetch exhibition");
+        const res = await fetch(`http://localhost:5001/api/v1/booking/${bookingId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (!res.ok) throw new Error("Failed to fetch booking");
         const data = await res.json();
-        setExhibition(data.data);
+        const booking = data.data;
+        setExhibition(booking.exhibition);
+        setBoothType(booking.boothType);
+        setAmount(booking.amount);
       } catch (err) {
         console.error(err);
-        alert("Cannot load exhibition");
+        alert("Cannot load booking data");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchExhibition();
-  }, [exhibitionId]);
+    fetchBooking();
+  }, [bookingId, token]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,31 +77,30 @@ export default function CreateBooking() {
     setSubmitting(true);
 
     const payload = {
-      exhibition: exhibition._id,
       boothType,
       amount,
     };
 
     try {
-      const res = await fetch("http://localhost:5001/api/v1/booking", {
-        method: "POST",
+      const res = await fetch(`http://localhost:5001/api/v1/booking/${bookingId}`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // ใช้ token จาก useAuth
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(payload),
       });
 
       if (!res.ok) {
         const errData = await res.json();
-        throw new Error(errData.message || "Booking failed");
+        throw new Error(errData.message || "Update failed");
       }
 
-      alert("Booking created successfully!");
+      alert("Booking updated successfully!");
       router.push("/mybooking");
     } catch (err: any) {
       console.error(err);
-      alert(err.message || "Booking failed");
+      alert(err.message || "Update failed");
     } finally {
       setSubmitting(false);
     }
@@ -94,7 +117,7 @@ export default function CreateBooking() {
   if (!exhibition) {
     return (
       <Box display="flex" justifyContent="center" mt={10}>
-        <Typography variant="h6">Exhibition not found</Typography>
+        <Typography variant="h6">Booking not found</Typography>
       </Box>
     );
   }
@@ -104,7 +127,7 @@ export default function CreateBooking() {
       <Card sx={{ width: 450, p: 1, boxShadow: 3 }}>
         <CardContent>
           <Typography variant="h5" fontWeight="bold" mb={2}>
-            Book Booth
+            Edit Booking
           </Typography>
 
           <Divider sx={{ mb: 2 }} />
@@ -153,7 +176,7 @@ export default function CreateBooking() {
               sx={{ mt: 2 }}
               disabled={submitting}
             >
-              {submitting ? "Submitting..." : "SUBMIT"}
+              {submitting ? "Updating..." : "UPDATE BOOKING"}
             </Button>
           </form>
         </CardContent>
