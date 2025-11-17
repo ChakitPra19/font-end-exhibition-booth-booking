@@ -1,154 +1,194 @@
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
-import { getAllExhibitions } from '@/libs';
-import { Exhibition } from '../../../interface';
-import Link from 'next/link';
+import { useAuth } from '@/contexts/AuthContext'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import Image from 'next/image'
+import Link from 'next/link'
+import { getExhibitions, Exhibition } from '@/lib/api/exhibitions'
 
 export default function ExhibitionsPage() {
-  const [exhibitions, setExhibitions] = useState<Exhibition[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const { user } = useAuth()
+  const router = useRouter()
+  const [exhibitions, setExhibitions] = useState<Exhibition[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchExhibitions = async () => {
       try {
-        const response = await getAllExhibitions();
-        if (response.success) {
-          setExhibitions(response.data ?? []);
-        } else {
-          setExhibitions([]);
-        }
-      } catch (err: any) {
-        setError(err.message || 'Failed to fetch exhibitions');
-        setExhibitions([]);
+        setLoading(true)
+        const response = await getExhibitions()
+        setExhibitions(response.data)
+      } catch (error) {
+        console.error('Error fetching exhibitions:', error)
+        setError('ไม่สามารถโหลดข้อมูลนิทรรศการได้')
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    fetchExhibitions();
-  }, []);
+    fetchExhibitions()
+  }, [])
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
+  const getStatusColor = (startDate: string, durationDay: number) => {
+    const start = new Date(startDate)
+    const end = new Date(start.getTime() + durationDay * 24 * 60 * 60 * 1000)
+    const now = new Date()
+    
+    if (now < start) return 'bg-blue-100 text-blue-800'
+    if (now >= start && now <= end) return 'bg-green-100 text-green-800'
+    return 'bg-gray-100 text-gray-800'
+  }
+
+  const getStatusText = (startDate: string, durationDay: number) => {
+    const start = new Date(startDate)
+    const end = new Date(start.getTime() + durationDay * 24 * 60 * 60 * 1000)
+    const now = new Date()
+    
+    if (now < start) return 'กำลังจะมาถึง'
+    if (now >= start && now <= end) return 'กำลังจัดงาน'
+    return 'จบแล้ว'
+  }
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-indigo-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading exhibitions...</p>
+      <div className="container mx-auto px-6 py-8">
+        <div className="animate-pulse">
+          <div className="h-8 bg-gray-200 rounded w-1/4 mb-8"></div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="bg-gray-200 h-64 rounded-lg"></div>
+            ))}
+          </div>
         </div>
       </div>
-    );
+    )
   }
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-red-600 text-lg">{error}</p>
-          <button
+      <div className="container mx-auto px-6 py-8">
+        <div className="text-center py-12">
+          <p className="text-red-500 text-lg">{error}</p>
+          <button 
             onClick={() => window.location.reload()}
-            className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+            className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors"
           >
-            Try Again
+            ลองใหม่
           </button>
         </div>
       </div>
-    );
+    )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Exhibitions</h1>
-          <p className="mt-2 text-gray-600">Discover upcoming exhibitions and book your booth</p>
-        </div>
-
-        {exhibitions.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-gray-500 text-lg">No exhibitions available at the moment.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {exhibitions.map((exhibition) => (
-              <div key={exhibition._id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                {/* Exhibition Image */}
-                <div className="aspect-w-16 aspect-h-9">
-                  <img
-                    src={exhibition.posterPicture || '/img/cover.jpg'}
-                    alt={exhibition.name}
-                    className="w-full h-48 object-cover"
-                  />
-                </div>
-                
-                {/* Exhibition Content */}
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                    {exhibition.name}
-                  </h3>
-                  
-                  <p className="text-gray-600 mb-4 line-clamp-3">
-                    {exhibition.description}
-                  </p>
-                  
-                  <div className="space-y-2 text-sm text-gray-500 mb-4">
-                    <div className="flex items-center">
-                      <span className="font-medium">Venue:</span>
-                      <span className="ml-2">{exhibition.venue}</span>
-                    </div>
-                    
-                    <div className="flex items-center">
-                      <span className="font-medium">Start Date:</span>
-                      <span className="ml-2">{formatDate(exhibition.startDate)}</span>
-                    </div>
-                    
-                    <div className="flex items-center">
-                      <span className="font-medium">Duration:</span>
-                      <span className="ml-2">{exhibition.durationDay} days</span>
-                    </div>
-                    
-                    <div className="flex items-center justify-between pt-2">
-                      <div className="flex space-x-4">
-                        <span className="text-green-600">
-                          Small: {exhibition.smallBoothQuota} booths
-                        </span>
-                        <span className="text-blue-600">
-                          Big: {exhibition.bigBoothQuota} booths
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="flex justify-between items-center">
-                    <Link
-                      href={`/exhibitions/${exhibition._id}`}
-                      className="text-indigo-600 hover:text-indigo-800 font-medium"
-                    >
-                      View Details
-                    </Link>
-                    
-                    <Link
-                      href={`/exhibitions/${exhibition._id}/book`}
-                      className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors"
-                    >
-                      Book Booth
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+    <div className="container mx-auto px-6 py-8">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold text-gray-900">นิทรรศการทั้งหมด</h1>
+        {user?.role === 'admin' && (
+          <Link 
+            href="/admin/exhibitions/create"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors"
+          >
+            เพิ่มนิทรรศการใหม่
+          </Link>
         )}
       </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {exhibitions.map((exhibition) => {
+          const endDate = new Date(new Date(exhibition.startDate).getTime() + exhibition.durationDay * 24 * 60 * 60 * 1000)
+          const totalBooths = exhibition.smallBoothQuota + exhibition.bigBoothQuota
+          
+          return (
+            <div key={exhibition._id} className="bg-white rounded-lg shadow-lg overflow-hidden">
+              <div className="relative h-48 bg-gray-200">
+                {exhibition.posterPicture ? (
+                  <Image
+                    src={exhibition.posterPicture}
+                    alt={exhibition.name}
+                    fill
+                    className="object-cover"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                      const parent = target.parentNode as HTMLElement;
+                      parent.innerHTML = '<div class="w-full h-full bg-gray-300 flex items-center justify-center"><span class="text-gray-500">ไม่สามารถโหลดรูปภาพได้</span></div>';
+                    }}
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gray-300 flex items-center justify-center">
+                    <span className="text-gray-500">ไม่มีรูปภาพ</span>
+                  </div>
+                )}
+                <div className="absolute top-4 right-4">
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(exhibition.startDate, exhibition.durationDay)}`}>
+                    {getStatusText(exhibition.startDate, exhibition.durationDay)}
+                  </span>
+                </div>
+              </div>
+              
+              <div className="p-6">
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  {exhibition.name}
+                </h3>
+                <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+                  {exhibition.description}
+                </p>
+                
+                <div className="space-y-2 text-sm text-gray-500 mb-4">
+                  <div className="flex items-center">
+                    <span className="font-medium">วันที่:</span>
+                    <span className="ml-2">
+                      {new Date(exhibition.startDate).toLocaleDateString('th-TH')} - {endDate.toLocaleDateString('th-TH')}
+                    </span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="font-medium">สถานที่:</span>
+                    <span className="ml-2">{exhibition.venue}</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="font-medium">บูธทั้งหมด:</span>
+                    <span className="ml-2">{totalBooths} (เล็ก: {exhibition.smallBoothQuota}, ใหญ่: {exhibition.bigBoothQuota})</span>
+                  </div>
+                </div>
+
+                <div className="flex gap-2">
+                  <Link
+                    href={`/exhibitions/${exhibition._id}`}
+                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-center py-2 px-4 rounded-lg transition-colors"
+                  >
+                    ดูรายละเอียด
+                  </Link>
+                  {user?.role === 'admin' && (
+                    <Link
+                      href={`/admin/exhibitions/${exhibition._id}/edit`}
+                      className="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg transition-colors"
+                    >
+                      แก้ไข
+                    </Link>
+                  )}
+                </div>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      {exhibitions.length === 0 && (
+        <div className="text-center py-12">
+          <p className="text-gray-500 text-lg">ไม่มีนิทรรศการในขณะนี้</p>
+          {user?.role === 'admin' && (
+            <Link 
+              href="/admin/exhibitions/create"
+              className="inline-block mt-4 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors"
+            >
+              เพิ่มนิทรรศการแรก
+            </Link>
+          )}
+        </div>
+      )}
     </div>
-  );
+  )
 }
