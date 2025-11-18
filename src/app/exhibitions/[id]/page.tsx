@@ -204,7 +204,7 @@ export default function ExhibitionDetailPage() {
           <div className="flex gap-4 justify-center">
             {statusInfo.status === 'upcoming' && (
               <Link
-                href={`/exhibitions/${exhibition._id}/book`}
+                href={`/booking?exhibitionId=${exhibition._id}`}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg text-lg font-medium transition-colors"
               >
                 จองบูธ
@@ -220,7 +220,7 @@ export default function ExhibitionDetailPage() {
                   แก้ไขข้อมูล
                 </Link>
                 <Link
-                  href={`/admin/exhibitions/${exhibition._id}/bookings`}
+                  href={`/mybooking`}
                   className="bg-gray-600 hover:bg-gray-700 text-white px-8 py-3 rounded-lg text-lg font-medium transition-colors"
                 >
                   จัดการการจอง
