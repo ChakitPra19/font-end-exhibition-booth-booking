@@ -4,8 +4,10 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { getExhibitions, Exhibition } from '@/lib/api/exhibitions'
+import { useAuth } from '@/contexts/AuthContext'
 
 export default function HomePage() {
+  const { user } = useAuth()
   const [exhibitions, setExhibitions] = useState<Exhibition[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -47,12 +49,30 @@ export default function HomePage() {
             >
               ดูนิทรรศการทั้งหมด
             </Link>
-            <Link
-              href="/register"
-              className="bg-transparent border-2 border-white text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors inline-block"
-            >
-              สมัครสมาชิก
-            </Link>
+            {user ? (
+              user.role === 'admin' ? (
+                <Link
+                  href="/admin/exhibitions/create"
+                  className="bg-transparent border-2 border-white text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors inline-block"
+                >
+                  จัดการนิทรรศการ
+                </Link>
+              ) : (
+                <Link
+                  href="/mybooking"
+                  className="bg-transparent border-2 border-white text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors inline-block"
+                >
+                  การจองของฉัน
+                </Link>
+              )
+            ) : (
+              <Link
+                href="/register"
+                className="bg-transparent border-2 border-white text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors inline-block"
+              >
+                สมัครสมาชิก
+              </Link>
+            )}
           </div>
         </div>
       </section>
