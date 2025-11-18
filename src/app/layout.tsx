@@ -31,7 +31,7 @@ export default function RootLayout({
         <ReduxProvider>
           <AuthProvider>
             <TopMenu />
-            <main className="pt-16"> {/* เพิ่ม padding-top เพื่อไม่ให้ content ทับกับ fixed navbar */}
+            <main className="pt-26"> {/* เพิ่ม padding-top เพื่อไม่ให้ content ทับกับ fixed navbar */}
               {children}
             </main>
           </AuthProvider>
