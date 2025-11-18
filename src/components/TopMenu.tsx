@@ -37,61 +37,68 @@ export default function TopMenu() {
   };
 
   return (
-    <div className="w-full flex items-center justify-between px-8 py-5 bg-gradient-to-r from-white to-gray-50 shadow-lg border-b border-gray-100">
-      {/* Logo */}
-      <Link href="/">
-        <div className="text-2xl font-bold text-indigo-600 hover:text-indigo-700 transition-colors">
-          Exhibition Booking
-        </div>
-      </Link>
+    <nav className="bg-white shadow-md fixed top-0 left-0 right-0 z-50 m-0 p-0">
+      <div className="w-full flex items-center justify-between px-8 py-5 bg-gradient-to-r from-white to-gray-50 shadow-lg border-b border-gray-100">
+        {/* Logo */}
+        <Link href="/">
+          <div className="text-2xl font-bold text-indigo-600 hover:text-indigo-700 transition-colors">
+            Exhibition Booking
+          </div>
+        </Link>
 
-      {/* Navigation */}
-      <div className="flex items-center gap-6">
-        <TopMenuItem title='นิทรรศการ' pageRef='/exhibitions'/>
-        {user && <TopMenuItem title='การจองของฉัน' pageRef='/mybooking'/>}
-        {user && user.role === 'admin' && (
-          <TopMenuItem title='จัดการนิทรรศการ' pageRef='/admin/exhibitions/create'/>
-        )}
-      </div>
-      
-      {/* User section */}
-      <div className="flex items-center gap-4">
-        {authLoading ? (
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 border-2 border-gray-300 border-t-indigo-600 rounded-full animate-spin"></div>
-            <span className="text-sm text-gray-500">กำลังโหลด...</span>
-          </div>
-        ) : user ? (
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-600">
-              <span className="font-medium">สวัสดี, {user.name}!</span>
-              <span className="ml-2 px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded font-medium">
-                {user.role ? user.role.toUpperCase() : 'USER'}
+        {/* Navigation */}
+        <div className="flex items-center gap-6">
+          <TopMenuItem title='นิทรรศการ' pageRef='/exhibitions'/>
+          {user && user.role === 'admin' && (
+            <TopMenuItem title='จัดการบูธในงาน' pageRef='/mybooking'/>
+          )}
+          {user && user.role === 'member' && (
+            <TopMenuItem title='การจองของฉัน' pageRef='/mybooking'/>
+          )}
+          {user && user.role === 'admin' && (
+            <TopMenuItem title='จัดการนิทรรศการ' pageRef='/admin/exhibitions/create'/>
+          )}
+        </div>
+        
+        {/* User section */}
+        <div className="flex items-center gap-4">
+          {authLoading ? (
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 border-2 border-gray-300 border-t-indigo-600 rounded-full animate-spin"></div>
+              <span className="text-sm text-gray-500">กำลังโหลด...</span>
+            </div>
+          ) : user ? (
+            <div className="flex items-center gap-4">
+              <span className="text-sm text-gray-600">
+                <span className="font-medium">สวัสดี, {user.name}!</span>
+                <span className="ml-2 px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded font-medium">
+                  {user.role ? user.role.toUpperCase() : 'USER'}
+                </span>
               </span>
-            </span>
-            <button
-              onClick={handleLogout}
-              disabled={loading}
-              className="px-4 py-2 text-sm text-white bg-red-600 hover:bg-red-700 rounded-md transition-colors disabled:opacity-50 font-medium"
-            >
-              {loading ? 'กำลังออกจากระบบ...' : 'ออกจากระบบ'}
-            </button>
-          </div>
-        ) : (
-          <div className="flex items-center gap-2">
-            <Link href="/login">
-              <button className="px-4 py-2 text-sm text-indigo-600 border border-indigo-600 hover:bg-indigo-50 rounded-md transition-colors font-medium">
-                เข้าสู่ระบบ
+              <button
+                onClick={handleLogout}
+                disabled={loading}
+                className="px-4 py-2 text-sm text-white bg-red-600 hover:bg-red-700 rounded-md transition-colors disabled:opacity-50 font-medium"
+              >
+                {loading ? 'กำลังออกจากระบบ...' : 'ออกจากระบบ'}
               </button>
-            </Link>
-            <Link href="/register">
-              <button className="px-4 py-2 text-sm text-white bg-indigo-600 hover:bg-indigo-700 rounded-md transition-colors font-medium">
-                สมัครสมาชิก
-              </button>
-            </Link>
-          </div>
-        )}
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Link href="/login">
+                <button className="px-4 py-2 text-sm text-indigo-600 border border-indigo-600 hover:bg-indigo-50 rounded-md transition-colors font-medium">
+                  เข้าสู่ระบบ
+                </button>
+              </Link>
+              <Link href="/register">
+                <button className="px-4 py-2 text-sm text-white bg-indigo-600 hover:bg-indigo-700 rounded-md transition-colors font-medium">
+                  สมัครสมาชิก
+                </button>
+              </Link>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </nav>
   );
 }

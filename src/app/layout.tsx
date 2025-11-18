@@ -26,12 +26,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+    <html lang="en" className="m-0 p-0">
+      <body className={`${geistSans.variable} ${geistMono.variable} m-0 p-0 overflow-x-hidden`}>
         <ReduxProvider>
           <AuthProvider>
-            <TopMenu/>
-            {children}
+            <TopMenu />
+            <main className="pt-16"> {/* เพิ่ม padding-top เพื่อไม่ให้ content ทับกับ fixed navbar */}
+              {children}
+            </main>
           </AuthProvider>
         </ReduxProvider>
       </body>
