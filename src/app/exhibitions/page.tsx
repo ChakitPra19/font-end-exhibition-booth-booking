@@ -14,20 +14,50 @@ export default function ExhibitionsPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    const fetchExhibitions = async () => {
-      try {
-        setLoading(true)
-        const response = await getExhibitions()
+  // สร้าง function สำหรับ fetch ที่ใช้ร่วมกัน
+  const fetchExhibitions = async () => {
+    try {
+      setLoading(true)
+      setError(null)
+      
+      console.log('Fetching exhibitions...')
+      const response = await getExhibitions()
+      console.log('Response received:', response)
+      
+      // ตรวจสอบ response structure ตาม API documentation
+      if (response && response.success && response.data) {
+        if (Array.isArray(response.data)) {
+          setExhibitions(response.data)
+          console.log('Exhibitions loaded successfully:', response.data.length)
+        } else {
+          setExhibitions([])
+          console.log('Data is not an array')
+        }
+      } else if (response && response.data && Array.isArray(response.data)) {
+        // Fallback: ถ้า response.data เป็น array โดยตรง
         setExhibitions(response.data)
-      } catch (error) {
-        console.error('Error fetching exhibitions:', error)
-        setError('ไม่สามารถโหลดข้อมูลนิทรรศการได้')
-      } finally {
-        setLoading(false)
+        console.log('Exhibitions loaded (fallback):', response.data.length)
+      } else {
+        setExhibitions([])
+        console.log('No valid data in response:', response)
       }
+    } catch (error: any) {
+      console.error('Error fetching exhibitions:', error)
+      
+      // แสดงข้อความ error ที่เข้าใจง่าย
+      if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+        setError('ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ กรุณาตรวจสอบว่าเซิร์ฟเวอร์ทำงานอยู่หรือไม่')
+      } else if (!navigator.onLine) {
+        setError('ไม่มีการเชื่อมต่ออินเทอร์เน็ต กรุณาตรวจสอบการเชื่อมต่อของคุณ')
+      } else {
+        setError('เกิดข้อผิดพลาดในการโหลดข้อมูล กรุณาลองใหม่อีกครั้ง')
+      }
+    } finally {
+      setLoading(false)
     }
+  }
 
+  useEffect(() => {
     fetchExhibitions()
   }, [])
 
@@ -70,13 +100,27 @@ export default function ExhibitionsPage() {
     return (
       <div className="container mx-auto px-6 py-8">
         <div className="text-center py-12">
-          <p className="text-red-500 text-lg">{error}</p>
-          <button 
-            onClick={() => window.location.reload()}
-            className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors"
-          >
-            ลองใหม่
-          </button>
+          <div className="mb-4">
+            <svg className="mx-auto h-12 w-12 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 18.5c-.77.833.192 2.5 1.732 2.5z" />
+            </svg>
+          </div>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">เกิดข้อผิดพลาด</h3>
+          <p className="text-red-500 text-lg mb-4">{error}</p>
+          <div className="space-x-4">
+            <button 
+              onClick={() => window.location.reload()}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors"
+            >
+              รีเฟรชหน้า
+            </button>
+            <button 
+              onClick={fetchExhibitions}
+              className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition-colors"
+            >
+              ลองใหม่
+            </button>
+          </div>
         </div>
       </div>
     )
