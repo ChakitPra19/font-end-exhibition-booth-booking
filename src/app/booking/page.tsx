@@ -63,7 +63,7 @@ export default function CreateBooking() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // ใช้ token จาก useAuth
+          Authorization: `Bearer ${token}`, 
         },
         body: JSON.stringify(payload),
       });
@@ -94,7 +94,7 @@ export default function CreateBooking() {
   if (!exhibition) {
     return (
       <Box display="flex" justifyContent="center" mt={10}>
-        <Typography variant="h6">Exhibition not found</Typography>
+        <Typography variant="h6">ไม่พบนิทรรศการ</Typography>
       </Box>
     );
   }
@@ -104,7 +104,7 @@ export default function CreateBooking() {
       <Card sx={{ width: 450, p: 1, boxShadow: 3 }}>
         <CardContent>
           <Typography variant="h5" fontWeight="bold" mb={2}>
-            Book Booth
+            จองบูธ
           </Typography>
 
           <Divider sx={{ mb: 2 }} />
@@ -112,7 +112,7 @@ export default function CreateBooking() {
           <form onSubmit={handleSubmit}>
             {/* Exhibition (disabled) */}
             <TextField
-              label="Exhibition"
+              label="นิทรรศการ"
               fullWidth
               margin="normal"
               value={exhibition.name}
@@ -121,22 +121,22 @@ export default function CreateBooking() {
 
             {/* Booth Type */}
             <FormControl fullWidth margin="normal">
-              <InputLabel id="booth-label">Booth Type</InputLabel>
+              <InputLabel id="booth-label">ประเภทบูธ</InputLabel>
               <Select
                 labelId="booth-label"
-                label="Booth Type"
+                label="ประเภทบูธ"
                 value={boothType}
                 onChange={(e) => setBoothType(e.target.value)}
                 required
               >
-                <MenuItem value="small">Small</MenuItem>
-                <MenuItem value="big">Big</MenuItem>
+                <MenuItem value="small">เล็ก</MenuItem>
+                <MenuItem value="big">ใหญ่</MenuItem>
               </Select>
             </FormControl>
 
             {/* Amount */}
             <TextField
-              label="Amount"
+              label="จำนวนบูธ"
               type="number"
               fullWidth
               margin="normal"
@@ -153,7 +153,7 @@ export default function CreateBooking() {
               sx={{ mt: 2 }}
               disabled={submitting}
             >
-              {submitting ? "Submitting..." : "SUBMIT"}
+              {submitting ? "กำลังโหลด..." : "ตกลง"}
             </Button>
           </form>
         </CardContent>

@@ -17,7 +17,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { useAuth } from "@/contexts/AuthContext";
-import { Exhibition } from "../../../interface";
+import { Exhibition } from "../../../../interface";
 
 export default function EditBooking() {
   const searchParams = useSearchParams();
@@ -127,7 +127,7 @@ export default function EditBooking() {
       <Card sx={{ width: 450, p: 1, boxShadow: 3 }}>
         <CardContent>
           <Typography variant="h5" fontWeight="bold" mb={2}>
-            Edit Booking
+            แก้ไขการจอง
           </Typography>
 
           <Divider sx={{ mb: 2 }} />
@@ -135,7 +135,7 @@ export default function EditBooking() {
           <form onSubmit={handleSubmit}>
             {/* Exhibition (disabled) */}
             <TextField
-              label="Exhibition"
+              label="นิทรรศการ"
               fullWidth
               margin="normal"
               value={exhibition.name}
@@ -144,22 +144,22 @@ export default function EditBooking() {
 
             {/* Booth Type */}
             <FormControl fullWidth margin="normal">
-              <InputLabel id="booth-label">Booth Type</InputLabel>
+              <InputLabel id="booth-label">ประเภทบูธ</InputLabel>
               <Select
                 labelId="booth-label"
-                label="Booth Type"
+                label="ประเภทบูธ"
                 value={boothType}
                 onChange={(e) => setBoothType(e.target.value)}
                 required
               >
-                <MenuItem value="small">Small</MenuItem>
-                <MenuItem value="big">Big</MenuItem>
+                <MenuItem value="small">เล็ก</MenuItem>
+                <MenuItem value="big">ใหญ่</MenuItem>
               </Select>
             </FormControl>
 
             {/* Amount */}
             <TextField
-              label="Amount"
+              label="จำนวนบูธ"
               type="number"
               fullWidth
               margin="normal"
@@ -176,7 +176,7 @@ export default function EditBooking() {
               sx={{ mt: 2 }}
               disabled={submitting}
             >
-              {submitting ? "Updating..." : "UPDATE BOOKING"}
+              {submitting ? "กำลังโหลด..." : "ตกลง"}
             </Button>
           </form>
         </CardContent>

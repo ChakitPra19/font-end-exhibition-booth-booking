@@ -87,7 +87,7 @@ export default function MyBooking() {
     return (
       <Box display="flex" justifyContent="center" mt={10}>
         <Typography variant="h5" sx={{ color: "#000" }}>
-          No bookings found
+          ไม่พบข้อมูลการจอง
         </Typography>
       </Box>
     );
@@ -96,7 +96,7 @@ export default function MyBooking() {
   return (
     <Box mt={5} px={3} pb={5}>
       <Typography variant="h4" mb={3} sx={{ color: "#000" }}>
-        My Bookings
+        การจองทั้งหมด
       </Typography>
 
       <Grid container spacing={2}>
@@ -120,13 +120,13 @@ export default function MyBooking() {
                   <Typography variant="h6" fontWeight="bold">
                     {exhibitionName}
                   </Typography>
-                  <Typography>Booth Type: {boothType}</Typography>
-                  <Typography>Amount: {booking.amount}</Typography>
-                  <Typography>Exhibition Date: {exhibitionStartDate}</Typography>
+                  <Typography>ประเภทบูธ: {boothType === "Small" ? "เล็ก" : boothType === "Big" ? "ใหญ่" : boothType}</Typography>
+                  <Typography>จำนวนบูธ: {booking.amount}</Typography>
+                  <Typography>วันที่: {exhibitionStartDate}</Typography>
 
                   {user?.role === "admin" && (
                     <Typography>
-                      Booked By: {bookedByName} ({bookedByEmail})
+                      จองโดย: {bookedByName} ({bookedByEmail})
                     </Typography>
                   )}
 
@@ -138,7 +138,7 @@ export default function MyBooking() {
                       size="small"
                       onClick={() => handleEdit(booking._id)}
                     >
-                      Edit
+                      แก้ไข
                     </Button>
                     <Button
                       variant="outlined"
@@ -147,7 +147,7 @@ export default function MyBooking() {
                       onClick={() => handleDelete(booking._id)}
                       disabled={deletingId === booking._id}
                     >
-                      {deletingId === booking._id ? "Deleting..." : "Delete"}
+                      {deletingId === booking._id ? "กำลังโหลด..." : "ลบ"}
                     </Button>
                   </Box>
                 </CardContent>
