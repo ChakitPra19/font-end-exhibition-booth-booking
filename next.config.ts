@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ['drive.google.com', 'images.unsplash.com']
+    unoptimized: true
   },
   async headers() {
       return [
