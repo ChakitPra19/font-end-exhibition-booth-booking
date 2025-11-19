@@ -6,6 +6,8 @@ import { Box, Card, CardContent, Typography, TextField, Select, MenuItem, Button
 import { useAuth } from "@/contexts/AuthContext";
 import { Exhibition } from "../../../interface";
 
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+
 export default function CreateBooking() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -25,7 +27,7 @@ export default function CreateBooking() {
 
     const fetchExhibition = async () => {
       try {
-        const res = await fetch(`http://localhost:5001/api/v1/exhibitions/${exhibitionId}`);
+        const res = await fetch(`${BACKEND_URL}/exhibitions/${exhibitionId}`);
         if (!res.ok) throw new Error("Failed to fetch exhibition");
         const data = await res.json();
         setExhibition(data.data);
@@ -59,7 +61,7 @@ export default function CreateBooking() {
     };
 
     try {
-      const res = await fetch("http://localhost:5001/api/v1/booking", {
+      const res = await fetch(`${BACKEND_URL}/booking`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
