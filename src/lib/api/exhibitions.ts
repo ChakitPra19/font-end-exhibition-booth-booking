@@ -44,17 +44,10 @@ export interface DeleteResponse {
 // Get all exhibitions
 export async function getExhibitions(): Promise<ExhibitionsResponse> {
   try {
-    const response = await fetch(`${BACKEND_URL}/exhibitions`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
+    const response = await fetch(`${BACKEND_URL}/exhibitions`);
     if (!response.ok) {
       throw new Error('Failed to fetch exhibitions');
     }
-
     return await response.json();
   } catch (error) {
     console.error('Error fetching exhibitions:', error);
@@ -65,17 +58,10 @@ export async function getExhibitions(): Promise<ExhibitionsResponse> {
 // Get exhibition by ID
 export async function getExhibition(id: string): Promise<ExhibitionResponse> {
   try {
-    const response = await fetch(`${BACKEND_URL}/exhibitions/${id}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
+    const response = await fetch(`${BACKEND_URL}/exhibitions/${id}`);
     if (!response.ok) {
       throw new Error('Failed to fetch exhibition');
     }
-
     return await response.json();
   } catch (error) {
     console.error('Error fetching exhibition:', error);
