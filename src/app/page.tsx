@@ -42,7 +42,7 @@ export default function HomePage() {
             เว็บไซต์สำหรับการจองบูธในงานนิทรรศการต่าง ๆ 
             ค้นหาและจองบูธได้อย่างง่ายดาย
           </p>
-          <div className="space-x-4">
+          <div className="flex flex-wrap justify-center gap-4">
             <Link
               href="/exhibitions"
               className="bg-white text-blue-600 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors inline-block"
