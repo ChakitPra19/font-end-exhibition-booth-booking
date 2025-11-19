@@ -3,13 +3,9 @@ import { Booking, ApiResponse } from '../../interface';
 const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000/api/v1';
 
 // Get all bookings
-export async function getAllBookings(token: string): Promise<ApiResponse<Booking[]>> {
+export async function getAllBookings(): Promise<ApiResponse<Booking[]>> {
   const response = await fetch(`${API_BASE_URL}/booking`, {
     method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
   });
 
   if (!response.ok) {
@@ -41,13 +37,9 @@ export async function createBooking(
 }
 
 // Get booking by ID
-export async function getBookingById(id: string, token: string): Promise<ApiResponse<Booking>> {
+export async function getBookingById(id: string): Promise<ApiResponse<Booking>> {
   const response = await fetch(`${API_BASE_URL}/booking/${id}`, {
     method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
   });
 
   if (!response.ok) {
