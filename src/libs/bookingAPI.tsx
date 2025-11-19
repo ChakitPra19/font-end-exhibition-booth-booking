@@ -1,5 +1,6 @@
 import { Booking, ApiResponse } from '../../interface';
 
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000/api/v1';
 
 // Get all bookings
@@ -20,7 +21,7 @@ export async function createBooking(
   bookingData: Omit<Booking, '_id' | 'createdAt' | 'updatedAt'>,
   token: string
 ): Promise<ApiResponse<Booking>> {
-  const response = await fetch(`${API_BASE_URL}/booking`, {
+  const response = await fetch(`${BACKEND_URL}/booking`, {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -38,7 +39,7 @@ export async function createBooking(
 
 // Get booking by ID
 export async function getBookingById(id: string): Promise<ApiResponse<Booking>> {
-  const response = await fetch(`${API_BASE_URL}/booking/${id}`, {
+  const response = await fetch(`${BACKEND_URL}/booking/${id}`, {
     method: 'GET',
   });
 
@@ -55,7 +56,7 @@ export async function updateBooking(
   bookingData: Partial<Omit<Booking, '_id' | 'createdAt' | 'updatedAt'>>,
   token: string
 ): Promise<ApiResponse<Booking>> {
-  const response = await fetch(`${API_BASE_URL}/booking/${id}`, {
+  const response = await fetch(`${BACKEND_URL}/booking/${id}`, {
     method: 'PUT',
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -73,7 +74,7 @@ export async function updateBooking(
 
 // Delete booking
 export async function deleteBooking(id: string, token: string): Promise<ApiResponse<null>> {
-  const response = await fetch(`${API_BASE_URL}/booking/${id}`, {
+  const response = await fetch(`${BACKEND_URL}/booking/${id}`, {
     method: 'DELETE',
     headers: {
       'Authorization': `Bearer ${token}`,
