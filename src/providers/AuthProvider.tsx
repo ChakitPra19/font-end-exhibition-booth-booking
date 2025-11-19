@@ -71,10 +71,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     try {
       const response = await getCurrentUser(storedToken);
-      if (response.success) {
+      if (response.success && response.data) {
         const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
         const userData = {
           ...response.data,
+          _id: response.data._id || currentUser._id || '',
+          createdAt: response.data.createdAt || currentUser.createdAt || '',
           role: response.data.role || currentUser.role || 'user'
         };
         setUser(userData);

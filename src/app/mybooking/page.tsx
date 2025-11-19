@@ -9,8 +9,7 @@ import {
   Typography,
   Button,
   CircularProgress,
-  Grid,
-  Divider,
+  Divider
 } from "@mui/material";
 import { useAuth } from "@/contexts/AuthContext";
 import { Booking } from "../../../interface";
@@ -99,22 +98,43 @@ export default function MyBooking() {
         การจองทั้งหมด
       </Typography>
 
-      <Grid container spacing={2}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: 2,
+        }}
+      >
         {bookings.map((booking) => {
-          const exhibitionName = booking.exhibition?.name ?? "Unknown Exhibition";
-          const exhibitionStartDate = booking.exhibition?.startDate
-            ? new Date(booking.exhibition.startDate).toLocaleDateString()
-            : "No date";
+          let exhibitionName = "Unknown Exhibition";
+          let exhibitionStartDate = "No date";
+          if (booking.exhibition && typeof booking.exhibition === "object") {
+            exhibitionName = booking.exhibition.name ?? "Unknown Exhibition";
+            exhibitionStartDate = booking.exhibition.startDate
+              ? new Date(booking.exhibition.startDate).toLocaleDateString()
+              : "No date";
+          }
 
           const boothType = booking.boothType
             ? booking.boothType.charAt(0).toUpperCase() + booking.boothType.slice(1)
             : "N/A";
 
-          const bookedByName = booking.user?.name ?? "N/A";
-          const bookedByEmail = booking.user?.email ?? "N/A";
+          let bookedByName = "N/A";
+          let bookedByEmail = "N/A";
+          if (booking.user && typeof booking.user === "object") {
+            bookedByName = booking.user.name ?? "N/A";
+            bookedByEmail = booking.user.email ?? "N/A";
+          }
 
           return (
-            <Grid item xs={12} md={6} key={booking._id}>
+            <Box
+              key={String(booking._id)}
+              sx={{
+                flex: { xs: '1 1 100%', md: '1 1 48%' },
+                minWidth: { xs: '100%', md: '48%' },
+                boxSizing: 'border-box',
+              }}
+            >
               <Card sx={{ boxShadow: 3 }}>
                 <CardContent>
                   <Typography variant="h6" fontWeight="bold">
@@ -136,7 +156,7 @@ export default function MyBooking() {
                     <Button
                       variant="contained"
                       size="small"
-                      onClick={() => handleEdit(booking._id)}
+                      onClick={() => handleEdit(String(booking._id))}
                     >
                       แก้ไข
                     </Button>
@@ -144,7 +164,7 @@ export default function MyBooking() {
                       variant="outlined"
                       size="small"
                       color="error"
-                      onClick={() => handleDelete(booking._id)}
+                      onClick={() => handleDelete(String(booking._id))}
                       disabled={deletingId === booking._id}
                     >
                       {deletingId === booking._id ? "กำลังโหลด..." : "ลบ"}
@@ -152,10 +172,10 @@ export default function MyBooking() {
                   </Box>
                 </CardContent>
               </Card>
-            </Grid>
+            </Box>
           );
         })}
-      </Grid>
+      </Box>
     </Box>
   );
 }
