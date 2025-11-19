@@ -30,7 +30,7 @@ export default function MyBooking() {
     const fetchBookings = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`${BACKEND_URL}/api/v1/booking`, {
+        const res = await fetch(`${BACKEND_URL}/booking`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -58,7 +58,7 @@ export default function MyBooking() {
     setDeletingId(id);
 
     try {
-      const res = await fetch(`${BACKEND_URL}/api/v1/booking/${id}`, {
+      const res = await fetch(`${BACKEND_URL}/booking/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,

@@ -44,7 +44,7 @@ export default function EditBooking() {
     const fetchBooking = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`${BACKEND_URL}/api/v1/booking/${bookingId}`, {
+        const res = await fetch(`${BACKEND_URL}/booking/${bookingId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -84,7 +84,7 @@ export default function EditBooking() {
     };
 
     try {
-      const res = await fetch(`${BACKEND_URL}/api/v1/booking/${bookingId}`, {
+      const res = await fetch(`${BACKEND_URL}/booking/${bookingId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
