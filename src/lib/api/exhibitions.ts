@@ -44,7 +44,7 @@ export interface DeleteResponse {
 // Get all exhibitions
 export async function getExhibitions(): Promise<ExhibitionsResponse> {
   try {
-    const response = await fetch(`${BACKEND_URL}/api/v1/exhibitions`, {
+    const response = await fetch(`${BACKEND_URL}/exhibitions`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -65,7 +65,7 @@ export async function getExhibitions(): Promise<ExhibitionsResponse> {
 // Get exhibition by ID
 export async function getExhibition(id: string): Promise<ExhibitionResponse> {
   try {
-    const response = await fetch(`${BACKEND_URL}/api/v1/exhibitions/${id}`, {
+    const response = await fetch(`${BACKEND_URL}/exhibitions/${id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -86,7 +86,7 @@ export async function getExhibition(id: string): Promise<ExhibitionResponse> {
 // Create new exhibition (admin only)
 export async function createExhibition(data: CreateExhibitionData, token: string): Promise<ExhibitionResponse> {
   try {
-    const response = await fetch(`${BACKEND_URL}/api/v1/exhibitions`, {
+    const response = await fetch(`${BACKEND_URL}/exhibitions`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -110,7 +110,7 @@ export async function createExhibition(data: CreateExhibitionData, token: string
 // Update exhibition (admin only)
 export async function updateExhibition(id: string, data: CreateExhibitionData, token: string): Promise<ExhibitionResponse> {
   try {
-    const response = await fetch(`${BACKEND_URL}/api/v1/exhibitions/${id}`, {
+    const response = await fetch(`${BACKEND_URL}/exhibitions/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -134,7 +134,7 @@ export async function updateExhibition(id: string, data: CreateExhibitionData, t
 // Delete exhibition (admin only)
 export async function deleteExhibition(id: string, token: string): Promise<DeleteResponse> {
   try {
-    const response = await fetch(`${BACKEND_URL}/api/v1/exhibitions/${id}`, {
+    const response = await fetch(`${BACKEND_URL}/exhibitions/${id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
