@@ -19,6 +19,8 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import { Exhibition } from "../../../../interface";
 
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+
 export default function EditBooking() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -42,7 +44,7 @@ export default function EditBooking() {
     const fetchBooking = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`http://localhost:5001/api/v1/booking/${bookingId}`, {
+        const res = await fetch(`${BACKEND_URL}/api/v1/booking/${bookingId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -82,7 +84,7 @@ export default function EditBooking() {
     };
 
     try {
-      const res = await fetch(`http://localhost:5001/api/v1/booking/${bookingId}`, {
+      const res = await fetch(`${BACKEND_URL}/api/v1/booking/${bookingId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

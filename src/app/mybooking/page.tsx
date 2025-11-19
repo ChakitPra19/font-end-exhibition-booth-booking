@@ -14,6 +14,8 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import { Booking } from "../../../interface";
 
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+
 export default function MyBooking() {
   const { user, token } = useAuth();
   const router = useRouter();
@@ -28,7 +30,7 @@ export default function MyBooking() {
     const fetchBookings = async () => {
       setLoading(true);
       try {
-        const res = await fetch("http://localhost:5001/api/v1/booking", {
+        const res = await fetch(`${BACKEND_URL}/api/v1/booking`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -56,7 +58,7 @@ export default function MyBooking() {
     setDeletingId(id);
 
     try {
-      const res = await fetch(`http://localhost:5001/api/v1/booking/${id}`, {
+      const res = await fetch(`${BACKEND_URL}/api/v1/booking/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
